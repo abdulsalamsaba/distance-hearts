@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Distance Hearts 💕 — Fun Games for Long Distance Couples</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --pink: #ff6b9d;
+      --pink-dark: #e84a7f;
+      --purple: #9b59b6;
+      --cream: #fff5f8;
+      --dark: #2d1b2e;
+      --soft: #ffe0ec;
+      --card: #ffffff;
+      --shadow: 0 10px 40px rgba(255, 107, 157, 0.15);
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: linear-gradient(160deg, #fff0f5 0%, #f3e8ff 40%, #ffe4f0 100%);
+      min-height: 100vh; color: var(--dark); overflow-x: hidden;
+    }
+    .hearts-bg { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
+    .heart { position: absolute; font-size: 20px; opacity: 0.12; animation: float 12s infinite ease-in-out; }
+    @keyframes float { 0%,100%{transform:translateY(0) rotate(0)} 50%{transform:translateY(-40px) rotate(15deg)} }
+    .container { position: relative; z-index: 1; max-width: 480px; margin: 0 auto; padding: 16px 14px 80px; }
+    header { text-align: center; padding: 24px 10px 12px; }
+    .logo { font-family: 'Playfair Display', serif; font-size: 2rem; font-weight: 700; background: linear-gradient(135deg, var(--pink), var(--purple)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 4px; }
+    .tagline { font-size: 0.9rem; color: #8a6a7a; font-weight: 600; }
+    .room-box { background: var(--card); border-radius: 20px; padding: 16px; margin: 12px 0 16px; box-shadow: var(--shadow); }
+    .room-title { font-size: 0.85rem; font-weight: 800; color: var(--pink); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; text-align: center; }
+    .room-row { display: flex; gap: 8px; margin-bottom: 10px; }
+    .room-row input { flex: 1; border: 2px solid var(--soft); border-radius: 12px; padding: 11px 12px; font-size: 1rem; font-family: inherit; outline: none; background: var(--cream); text-align: center; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; }
+    .room-row input:focus { border-color: var(--pink); }
+    .room-btn { padding: 11px 16px; border: none; border-radius: 12px; background: linear-gradient(135deg, var(--pink), var(--pink-dark)); color: white; font-weight: 800; font-size: 0.9rem; cursor: pointer; white-space: nowrap; }
+    .room-status { text-align: center; font-size: 0.85rem; font-weight: 700; color: #7a5a6a; min-height: 22px; }
+    .room-status.connected { color: #27ae60; }
+    .room-hint { font-size: 0.78rem; color: #a08a9a; text-align: center; margin-top: 6px; line-height: 1.35; }
+    .names-box { display: flex; gap: 10px; margin-bottom: 14px; }
+    .names-box input { flex: 1; border: 2px solid var(--soft); border-radius: 12px; padding: 10px 12px; font-size: 0.95rem; font-family: inherit; outline: none; background: white; }
+    .names-box input:focus { border-color: var(--pink); }
+    .tabs { display: flex; gap: 7px; overflow-x: auto; padding: 4px 0 14px; scrollbar-width: none; }
+    .tabs::-webkit-scrollbar { display: none; }
+    .tab { flex-shrink: 0; padding: 9px 15px; border-radius: 50px; background: white; border: 2px solid transparent; font-weight: 700; font-size: 0.85rem; color: #8a6a7a; cursor: pointer; transition: all 0.2s; box-shadow: 0 3px 10px rgba(0,0,0,0.04); }
+    .tab.active { background: linear-gradient(135deg, var(--pink), var(--pink-dark)); color: white; transform: scale(1.04); }
+    .card { background: var(--card); border-radius: 22px; padding: 24px 18px; box-shadow: var(--shadow); margin-bottom: 18px; display: none; animation: fadeIn 0.3s ease; }
+    .card.active { display: block; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    .card-title { font-family: 'Playfair Display', serif; font-size: 1.4rem; text-align: center; margin-bottom: 4px; }
+    .card-sub { text-align: center; font-size: 0.85rem; color: #9a7a8a; margin-bottom: 18px; }
+    .modes { display: flex; flex-wrap: wrap; gap: 7px; justify-content: center; margin-bottom: 18px; }
+    .mode-btn { padding: 7px 14px; border-radius: 50px; border: 2px solid var(--soft); background: white; font-weight: 700; font-size: 0.82rem; cursor: pointer; color: #7a5a6a; transition: all 0.2s; }
+    .mode-btn.active { background: var(--pink); color: white; border-color: var(--pink); }
+    .mode-btn.spicy-active { background: linear-gradient(135deg, #e74c3c, #c0392b); border-color: #c0392b; }
+    .result-box { background: linear-gradient(145deg, #fff5f9, #f8f0ff); border-radius: 18px; padding: 26px 16px; min-height: 150px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; margin-bottom: 18px; border: 2px dashed var(--pink); position: relative; }
+    .result-label { font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing: 1.2px; color: var(--pink); margin-bottom: 10px; }
+    .result-text { font-size: 1.15rem; font-weight: 700; line-height: 1.45; color: var(--dark); }
+    .result-type { position: absolute; top: 10px; right: 12px; font-size: 0.7rem; background: var(--pink); color: white; padding: 3px 9px; border-radius: 20px; font-weight: 700; }
+    .result-type.dare { background: #e74c3c; }
+    .result-type.truth { background: #6c5ce7; }
+    .btn-row { display: flex; gap: 10px; }
+    .btn { flex: 1; padding: 15px 10px; border: none; border-radius: 14px; font-family: inherit; font-weight: 800; font-size: 1rem; cursor: pointer; transition: transform 0.12s; color: white; }
+    .btn:active { transform: scale(0.96); }
+    .btn-truth { background: linear-gradient(135deg, #6c5ce7, #a29bfe); box-shadow: 0 6px 18px rgba(108,92,231,0.3); }
+    .btn-dare { background: linear-gradient(135deg, var(--pink), var(--pink-dark)); box-shadow: 0 6px 18px rgba(255,107,157,0.35); }
+    .btn-random { background: linear-gradient(135deg, var(--purple), #8e44ad); box-shadow: 0 6px 18px rgba(155,89,182,0.3); width: 100%; margin-top: 10px; }
+    .btn-secondary { background: white; color: var(--pink); border: 2px solid var(--pink); box-shadow: none; width: 100%; margin-top: 12px; }
+    .game-grid { display: grid; gap: 10px; }
+    .game-item { background: var(--cream); border-radius: 14px; padding: 14px; display: flex; align-items: center; gap: 12px; cursor: pointer; transition: transform 0.12s; border: 2px solid transparent; }
+    .game-item:active { transform: scale(0.98); }
+    .game-icon { font-size: 1.6rem; width: 44px; height: 44px; background: white; border-radius: 12px; display: flex; align-items: center; justify-content: center; box-shadow: 0 3px 8px rgba(0,0,0,0.05); }
+    .game-info h3 { font-size: 0.98rem; font-weight: 800; margin-bottom: 1px; }
+    .game-info p { font-size: 0.78rem; color: #9a7a8a; }
+    .challenge-list { display: flex; flex-direction: column; gap: 9px; }
+    .challenge { background: white; border-radius: 12px; padding: 13px 14px; border-left: 5px solid var(--pink); font-size: 0.92rem; font-weight: 600; line-height: 1.4; }
+    footer { text-align: center; padding: 24px 16px; font-size: 0.8rem; color: #b08a9a; }
+    footer span { color: var(--pink); font-weight: 700; }
+    .toast { position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%) translateY(100px); background: var(--dark); color: white; padding: 11px 22px; border-radius: 50px; font-weight: 700; font-size: 0.88rem; opacity: 0; transition: all 0.3s; z-index: 100; white-space: nowrap; max-width: 90%; text-align: center; }
+    .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+    .turn-info { text-align: center; font-size: 0.8rem; color: #9a7a8a; margin-top: 8px; font-weight: 600; }
+  </style>
+</head>
+<body>
+  <div class="hearts-bg" id="hearts"></div>
+  <div class="container">
+    <header>
+      <div class="logo">Distance Hearts 💕</div>
+      <div class="tagline">Play together from anywhere</div>
+    </header>
+
+    <div class="room-box">
+      <div class="room-title">Couple Room</div>
+      <div class="room-row">
+        <input type="text" id="roomCode" placeholder="ROOM CODE" maxlength="6" autocomplete="off">
+        <button class="room-btn" onclick="joinRoom()">Join</button>
+      </div>
+      <div class="room-row">
+        <button class="room-btn" style="width:100%;background:linear-gradient(135deg,#6c5ce7,#a29bfe)" onclick="createRoom()">Create New Room</button>
+      </div>
+      <div class="room-status" id="roomStatus">Not connected — create or join a room</div>
+      <div class="room-hint">One of you creates a room → share the code → the other joins.<br>Same code = same questions appear for both of you.</div>
+    </div>
+
+    <div class="names-box">
+      <input type="text" id="name1" placeholder="Your name" maxlength="12">
+      <input type="text" id="name2" placeholder="Partner's name" maxlength="12">
+    </div>
+
+    <div class="tabs">
+      <button class="tab active" data-tab="tod">Truth or Dare</button>
+      <button class="tab" data-tab="wyr">Would You Rather</button>
+      <button class="tab" data-tab="nhie">Never Have I Ever</button>
+      <button class="tab" data-tab="know">How Well Do You Know Me?</button>
+      <button class="tab" data-tab="challenges">LDR Challenges</button>
+      <button class="tab" data-tab="more">More Games</button>
+    </div>
+
+    <!-- TRUTH OR DARE -->
+    <div class="card active" id="tod">
+      <h2 class="card-title">Truth or Dare</h2>
+      <p class="card-sub">Hundreds of questions made for distance</p>
+      <div class="modes" id="tod-modes">
+        <button class="mode-btn active" data-mode="soft">Soft 🤍</button>
+        <button class="mode-btn" data-mode="flirty">Flirty 😘</button>
+        <button class="mode-btn" data-mode="spicy">Spicy 🔥</button>
+        <button class="mode-btn" data-mode="deep">Deep 💭</button>
+      </div>
+      <div class="result-box" id="tod-result">
+        <div class="result-label">Tap a button below</div>
+        <div class="result-text">Ready when you both are 💕</div>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-truth" onclick="drawTOD('truth')">Truth</button>
+        <button class="btn btn-dare" onclick="drawTOD('dare')">Dare</button>
+      </div>
+      <button class="btn btn-random" onclick="drawTOD('random')">Random 🎲</button>
+      <div class="turn-info" id="tod-turn"></div>
+    </div>
+
+    <!-- WOULD YOU RATHER -->
+    <div class="card" id="wyr">
+      <h2 class="card-title">Would You Rather</h2>
+      <p class="card-sub">Impossible choices that spark real talks</p>
+      <div class="result-box" id="wyr-result">
+        <div class="result-label">Would you rather...</div>
+        <div class="result-text">Tap for a new dilemma</div>
+      </div>
+      <button class="btn btn-random" onclick="drawWYR()">New Dilemma ✨</button>
+      <div class="turn-info" id="wyr-turn"></div>
+    </div>
+
+    <!-- NEVER HAVE I EVER -->
+    <div class="card" id="nhie">
+      <h2 class="card-title">Never Have I Ever</h2>
+      <p class="card-sub">Hold up fingers on camera & confess</p>
+      <div class="result-box" id="nhie-result">
+        <div class="result-label">Never have I ever...</div>
+        <div class="result-text">Ready for the first confession?</div>
+      </div>
+      <button class="btn btn-random" onclick="drawNHIE()">Next One 🙌</button>
+      <div class="turn-info" id="nhie-turn"></div>
+    </div>
+
+    <!-- HOW WELL DO YOU KNOW ME -->
+    <div class="card" id="know">
+      <h2 class="card-title">How Well Do You Know Me?</h2>
+      <p class="card-sub">Guess your partner’s answer — then reveal!</p>
+      <div class="result-box" id="know-result">
+        <div class="result-label">Ask your partner</div>
+        <div class="result-text">Tap for a question about them</div>
+      </div>
+      <button class="btn btn-random" onclick="drawKnow()">New Question 💌</button>
+      <div class="turn-info" id="know-turn"></div>
+    </div>
+
+    <!-- LDR CHALLENGES -->
+    <div class="card" id="challenges">
+      <h2 class="card-title">LDR Challenges</h2>
+      <p class="card-sub">Sweet missions from anywhere</p>
+      <div class="challenge-list" id="challenge-list"></div>
+      <button class="btn btn-secondary" onclick="shuffleChallenges()">Shuffle Challenges 🔄</button>
+    </div>
+
+    <!-- MORE GAMES -->
+    <div class="card" id="more">
+      <h2 class="card-title">More Fun Ideas</h2>
+      <p class="card-sub">Quick games you can start right now</p>
+      <div class="game-grid">
+        <div class="game-item" onclick="showToast('Act it out on camera — no talking!')">
+          <div class="game-icon">🎭</div>
+          <div class="game-info"><h3>Virtual Charades</h3><p>Act it out on camera</p></div>
+        </div>
+        <div class="game-item" onclick="showToast('Pick a memory only you two share')">
+          <div class="game-icon">❓</div>
+          <div class="game-info"><h3>20 Questions</h3><p>About a shared memory</p></div>
+        </div>
+        <div class="game-item" onclick="showToast('Two truths + one lie about your week')">
+          <div class="game-icon">🤥</div>
+          <div class="game-info"><h3>Two Truths & a Lie</h3><p>Deep cuts edition</p></div>
+        </div>
+        <div class="game-item" onclick="showToast('Count to 3 and point at the same time')">
+          <div class="game-icon">👉</div>
+          <div class="game-info"><h3>Who’s More Likely To…</h3><p>Point at yourself or partner</p></div>
+        </div>
+        <div class="game-item" onclick="showToast('Send 3 emojis, they guess your day')">
+          <div class="game-icon">📱</div>
+          <div class="game-info"><h3>Emoji Day</h3><p>Describe your day in 3 emojis</p></div>
+        </div>
+        <div class="game-item" onclick="showToast('Same recipe, same time, funniest result wins')">
+          <div class="game-icon">🍳</div>
+          <div class="game-info"><h3>Cook-Along Race</h3><p>Make the same dish on call</p></div>
+        </div>
+        <div class="game-item" onclick="showToast('Draw something from your day & send it')">
+          <div class="game-icon">✏️</div>
+          <div class="game-info"><h3>Draw My Day</h3><p>Sketch & make them interpret</p></div>
+        </div>
+        <div class="game-item" onclick="showToast('One of you hosts 5 questions about the other')">
+          <div class="game-icon">🏆</div>
+          <div class="game-info"><h3>Partner Trivia Night</h3><p>How well do you remember?</p></div>
+        </div>
+      </div>
+    </div>
+
+    <footer>
+      Made with <span>♥</span> for couples who refuse to let distance win<br>
+      Play together • Laugh more • Stay close
+    </footer>
+  </div>
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const TOD = {
+      soft: {
+        truth: [
+          "What’s one small thing I do that always makes you smile?",
+          "What’s your favorite memory of us so far?",
+          "What song instantly makes you think of me?",
+          "What’s something you’re looking forward to doing together?",
+          "What’s the cutest thing I’ve ever said to you?",
+          "If we could teleport for one hour right now, what would we do?",
+          "What’s one thing about long distance that has actually made us stronger?",
+          "What’s a little habit of mine you’ve started copying?",
+          "When do you feel closest to me even though we’re apart?",
+          "What’s something you want us to try on our next video date?",
+          "What’s the best compliment you’ve ever received from me?",
+          "What part of my personality do you love the most?",
+          "What’s a random moment from our chats that still makes you laugh?",
+          "If you could bottle one feeling from our relationship, what would it be?",
+          "What’s something I do that makes you feel safe?",
+          "What’s your favorite way I say good morning or goodnight?",
+          "What’s one thing you’ve learned about yourself because of us?",
+          "What’s a small everyday thing you miss sharing with me?",
+          "What’s the sweetest message I’ve ever sent you?",
+          "If our relationship was a movie, what would the title be?",
+          "What’s one thing you’re proud of about how we handle the distance?",
+          "What’s a memory you replay when you miss me the most?",
+          "What’s something I’ve done that surprised you in a good way?",
+          "What’s your favorite thing about our conversations?",
+          "What’s one word that describes how you feel when we talk?"
+        ],
+        dare: [
+          "Send me a voice note saying three things you love about me right now.",
+          "Take a selfie of your current face and send it with no filter.",
+          "Do your best impression of me for 20 seconds on camera.",
+          "Write a 4-line poem about us and read it out loud.",
+          "Show me the view from your window right now.",
+          "Send me a photo of something in your room that reminds you of me.",
+          "Sing the chorus of a song that reminds you of us.",
+          "Make a silly face and hold it for 10 seconds.",
+          "Tell me a joke — it can be terrible.",
+          "Send a heart emoji to the last 3 people you texted (except me).",
+          "Change your profile picture to us for the next 24 hours.",
+          "Record yourself saying ‘I miss you’ in the cutest way possible.",
+          "Show me your favorite snack right now and take a bite on camera.",
+          "Do 10 jumping jacks while looking at the camera.",
+          "Send me a voice note of you laughing as hard as you can.",
+          "Draw a quick heart on paper and show it to me.",
+          "Tell me three things you’re grateful for today.",
+          "Send a photo of your feet / shoes right now (no judgment).",
+          "Hum a song and make me guess what it is.",
+          "Look into the camera and smile for a full 10 seconds without laughing."
+        ]
+      },
+      flirty: {
+        truth: [
+          "What’s the first thing you’d do if I walked through your door right now?",
+          "What’s a compliment you’ve been holding back?",
+          "When was the last time you thought about kissing me?",
+          "What’s one outfit of mine you secretly love?",
+          "What’s the most attractive thing about my personality?",
+          "Have you ever had a dream about me? Tell me about it.",
+          "What’s something flirty you’ve wanted to say but haven’t yet?",
+          "Which of my features do you stare at most on video calls?",
+          "What’s a little romantic gesture that always gets you?",
+          "If we had a secret code word for ‘I miss you a lot’, what would it be?",
+          "What’s the sexiest non-physical thing about me?",
+          "When do you feel the most desired by me?",
+          "What’s one thing I do that makes your heart race a little?",
+          "What’s the most romantic thing you’ve imagined us doing?",
+          "Have you ever blushed because of something I said?",
+          "What’s your favorite way I’ve flirted with you so far?",
+          "What’s one thing you’d love me to whisper to you?",
+          "What’s the most attractive photo of me you’ve seen?",
+          "What’s a small touch you miss the most?",
+          "If I was there right now, where would your hands go first?",
+          "What’s one flirty nickname you’ve thought of for me?",
+          "What’s the longest you’ve stared at my photo or video?",
+          "What’s something I wear (or could wear) that drives you crazy?",
+          "What’s the most romantic text you’ve wanted to send me?",
+          "When do you feel the strongest pull toward me?"
+        ],
+        dare: [
+          "Send me a voice note in your most seductive voice saying goodnight.",
+          "Blow a kiss to the camera in slow motion.",
+          "Describe exactly how you’d greet me at the airport.",
+          "Send a photo of what you’re wearing right now (or change into something cute).",
+          "Write a flirty text as if we just started dating and send it.",
+          "Do a little dance for me on camera for 15 seconds.",
+          "Tell me three things you’d whisper in my ear if I was there.",
+          "Send me a screenshot of your lock screen (or change it to us).",
+          "Give me a virtual ‘kiss’ by blowing one and holding it for 5 seconds.",
+          "Compliment me in the most dramatic way possible.",
+          "Send a voice note of you humming a romantic song while thinking of me.",
+          "Describe the perfect first kiss we would have after the distance ends.",
+          "Wink at the camera three times slowly.",
+          "Send a voice note saying my name in the softest way you can.",
+          "Show me your best ‘come here’ look on camera.",
+          "Write a short flirty poem and read it out loud.",
+          "Send me a photo of your lips or smile close-up.",
+          "Tell me one thing you’d do if we were alone in an elevator.",
+          "Send a voice note describing how you’d hold me.",
+          "Look at the camera like you’re about to kiss me."
+        ]
+      },
+      spicy: {
+        truth: [
+          "What’s a fantasy involving us that you’ve thought about lately?",
+          "What’s the hottest memory you have of us?",
+          "What’s one thing you’d love to try when we’re finally together again?",
+          "Where’s the most unexpected place you’ve thought about me?",
+          "What’s something I do that turns you on without even trying?",
+          "If we had one night with no rules, what would you want to do?",
+          "What’s a secret desire you’ve never told me?",
+          "How do you usually feel after our more intense calls?",
+          "What’s the sexiest thing about long-distance tension for you?",
+          "Describe the first 10 minutes after we reunite — in detail.",
+          "What’s the naughtiest thought you’ve had about me this week?",
+          "What’s one thing you want me to do to you the next time we’re alone?",
+          "Have you ever touched yourself while thinking about me? Be honest.",
+          "What’s your biggest turn-on when we’re on a video call?",
+          "What’s a position or scenario you keep replaying in your head?",
+          "What’s something dirty you’ve wanted to say but held back?",
+          "How do you like to be teased when we’re apart?",
+          "What’s the most intimate thing we’ve done over distance so far?",
+          "What’s one boundary you’d love to push when we meet again?",
+          "Describe exactly how you’d want me to wake you up if I was there.",
+          "What’s your favorite way I’ve made you feel desired from afar?",
+          "If I could control one of your hands for 5 minutes right now, what would you want me to do?",
+          "What’s a fantasy role-play you’d secretly love to try with me?",
+          "What’s the last thing that made you feel really turned on by me?",
+          "What’s one place on your body you want my attention the most?",
+          "Have you ever gotten turned on just from reading my messages?",
+          "What’s the dirtiest compliment you’ve wanted to give me?",
+          "What’s something you want me to say to you in bed?",
+          "What’s your biggest turn-off… and your biggest turn-on?",
+          "If we could only do one thing the first night we’re together, what would it be?",
+          "What’s a secret you’ve kept about how much you want me?",
+          "What’s the most intense fantasy you’ve had about us in the last month?",
+          "How do you like to be kissed — soft or hungry?",
+          "What’s one thing you want me to do with my mouth?",
+          "What’s the sexiest outfit you can imagine me wearing for you?",
+          "Have you ever imagined us in a public place? Tell me.",
+          "What’s one thing that always makes you wet/hard when you think of me?",
+          "What’s the longest you’ve stayed turned on thinking about us?",
+          "What’s a dirty little secret you’ve never shared with anyone else?",
+          "If I was there right now, what’s the first thing you’d undress?"
+        ],
+        dare: [
+          "Send a voice note describing what you’d do if I was lying next to you right now.",
+          "Change into something a little more… interesting and show me.",
+          "Tell me your current fantasy in as much detail as you’re comfortable with.",
+          "Send a photo that makes me want to book a flight immediately.",
+          "Whisper three dirty things you’d say to me if we were alone.",
+          "Do a slow stretch or pose for the camera that you know I like.",
+          "Write a short spicy scenario starring us and read it out loud.",
+          "Rate how much you’re missing the physical side of us from 1–10… then explain.",
+          "Send a voice note moaning my name (just once is enough 😏).",
+          "Describe the outfit (or lack of) you’d want me wearing when I arrive.",
+          "Take off one piece of clothing on camera and show me.",
+          "Send a close-up photo of a part of your body you know I like.",
+          "Tell me step-by-step what you would do to me if I was there for the next 30 minutes.",
+          "Record a 20-second voice note of you breathing heavily while thinking of me.",
+          "Show me how you would kiss me right now — use your hand or the camera.",
+          "Send me a text describing exactly where you want my hands right now.",
+          "Do a little strip tease for 15 seconds (as much as you’re comfortable with).",
+          "Tell me the dirtiest thing you’ve ever imagined us doing.",
+          "Send a photo of you biting your lip or looking at the camera the way you know gets me.",
+          "Describe in detail the last time you got turned on thinking about us.",
+          "Whisper what you want me to do to you the second we are alone again.",
+          "Send a voice note saying three things you want me to do to your body.",
+          "Show me the sexiest angle of yourself you can find right now.",
+          "Tell me a secret fantasy you’ve never told anyone else — only me.",
+          "Send a photo of your neck or collarbone and tell me what you’d want me to do there.",
+          "Describe how you’d ride me / how you’d want me on top of you.",
+          "Send a voice note of you saying ‘I want you’ as desperately as you can.",
+          "Show me what you’re wearing under your clothes right now.",
+          "Tell me exactly how you’d make me finish if I was there.",
+          "Send a close-up of your mouth and tell me what you’d do with it.",
+          "Rate your current level of horniness from 1–10 and explain why.",
+          "Describe the first thing you’d do if we were locked in a hotel room for 24 hours.",
+          "Send a voice note of you moaning softly while saying my name.",
+          "Tell me one thing you want me to dominate / one thing you want to dominate.",
+          "Show me how you’d touch yourself if I asked you to right now.",
+          "Describe the wettest/hardest you’ve been thinking about me.",
+          "Send a photo that says ‘come fuck me’ without using those words.",
+          "Whisper the dirtiest sentence you can think of right now.",
+          "Tell me how you’d wake me up with sex.",
+          "Send a voice note describing exactly how you want to be fucked."
+        ]
+      },
+      deep: {
+        truth: [
+          "What’s something about the distance that still scares you a little?",
+          "What’s one sacrifice you’ve made for us that I might not fully see?",
+          "When do you feel most secure in our relationship?",
+          "What’s a fear you have about our future that you haven’t shared?",
+          "How has being long distance changed the way you love?",
+          "What’s one thing you need more of from me right now?",
+          "What’s a moment when you almost gave up — and what made you stay?",
+          "What does ‘home’ mean to you when we’re not in the same place?",
+          "What’s something you’re proud of about how we handle the distance?",
+          "If you could change one thing about our current situation, what would it be?",
+          "What’s the hardest part of loving me from far away?",
+          "What do you need from me on the days the distance feels heavy?",
+          "What’s one thing you’ve never told me because you were scared of my reaction?",
+          "When do you feel the most loved by me?",
+          "What’s a dream you have for us that you haven’t said out loud yet?",
+          "What’s one insecurity you still carry about our relationship?",
+          "How do you want to be comforted when you’re hurting?",
+          "What’s something you wish I understood better about your daily life?",
+          "What’s the biggest lesson this distance has taught you?",
+          "What’s one thing you’re scared to lose if we stay apart longer?",
+          "What does commitment mean to you in a long-distance relationship?",
+          "What’s a moment you felt truly chosen by me?",
+          "What’s one way I can make you feel closer this week?",
+          "What’s something you want us to build together when the distance ends?",
+          "If you could ask me one deep question without fear, what would it be?"
+        ],
+        dare: [
+          "Send a voice note telling me one thing you’re grateful for about us today.",
+          "Write down three things you love about our future and read them.",
+          "Look into the camera for 30 seconds without speaking — just eye contact.",
+          "Tell me about a hard day you had and how you wished I was there.",
+          "Share a photo from a time you felt really lonely… and tell me what helped.",
+          "Say out loud one insecurity you have about us and let me respond.",
+          "Describe the version of us you’re fighting for.",
+          "Send a short voice note of you saying ‘I’m not going anywhere’ in your own words.",
+          "Tell me one way I can make you feel closer this week.",
+          "Share a childhood memory that somehow relates to how you love me now.",
+          "Tell me one thing you’re scared to lose if the distance lasts longer.",
+          "Look at me and tell me why you still choose us every day.",
+          "Send a voice note of you saying three things you’re proud of about us.",
+          "Tell me about a time you felt deeply understood by me.",
+          "Share one fear and one hope you have for our next chapter.",
+          "Write a short letter to future us and read it out loud.",
+          "Tell me one thing you need me to never stop doing.",
+          "Look into the camera and say the most honest thing on your heart right now.",
+          "Send a voice note describing how you want our first year living together to feel.",
+          "Tell me one wound from your past that still affects how you love."
+        ]
+      }
+    };
+
+    const WYR = [
+      "Would you rather relive our first date or fast-forward to living in the same city?",
+      "Would you rather have one perfect week together every 6 months, or short visits more often?",
+      "Would you rather only communicate by voice notes for a month, or only by video calls?",
+      "Would you rather I surprise you at your door tomorrow, or plan the perfect reunion trip together?",
+      "Would you rather know exactly when the distance ends, or keep the mystery?",
+      "Would you rather never fight again but also never have deep talks, or keep both?",
+      "Would you rather be able to read each other’s minds for one day, or feel each other’s touch for one hour?",
+      "Would you rather spend a whole day doing nothing but talking, or a whole day doing activities in silence together?",
+      "Would you rather have matching tattoos or matching phone wallpapers of us?",
+      "Would you rather I write you a love letter every week, or send you a surprise gift every month?",
+      "Would you rather only be able to text, or only be able to call for the next month?",
+      "Would you rather go on a spontaneous road trip the next time we meet, or stay in and do nothing?",
+      "Would you rather have a big dramatic reunion or a quiet, private one?",
+      "Would you rather I learn your love language perfectly, or you learn mine?",
+      "Would you rather never miss each other again, or keep missing each other because it means we care?",
+      "Would you rather have one extremely spicy night when we reunite, or many soft romantic nights?",
+      "Would you rather I dominate the next time we’re together, or you take full control?",
+      "Would you rather only be able to kiss for a whole day, or only be able to talk?",
+      "Would you rather spend the first 24 hours in bed, or exploring a new city together?",
+      "Would you rather have me surprise you with flowers every week, or with dirty voice notes?",
+      "Would you rather never argue again, or keep the passion that comes with makeup sex?",
+      "Would you rather live in my city, or have me move to yours?",
+      "Would you rather have a slow, romantic first night, or an intense, hungry one?",
+      "Would you rather I cook for you every day, or take you out every weekend?",
+      "Would you rather never watch another movie alone, or never eat another meal alone?",
+      "Would you rather have matching couple rings or matching couple tattoos?",
+      "Would you rather spend a whole weekend in silence just holding each other, or talking non-stop?",
+      "Would you rather I be soft and gentle, or rough and passionate the first night?",
+      "Would you rather have one long deep conversation every day, or many short sweet ones?",
+      "Would you rather the distance end tomorrow with no plan, or in 6 months with the perfect plan?"
+    ];
+
+    const NHIE = [
+      "Never have I ever fallen asleep on a video call with you.",
+      "Never have I ever screenshotted one of our conversations to re-read later.",
+      "Never have I ever cried because of the distance.",
+      "Never have I ever planned what I’d say the next time we meet.",
+      "Never have I ever worn something just because I knew you’d like it on camera.",
+      "Never have I ever checked the time difference before sending a message.",
+      "Never have I ever replayed one of our old voice notes.",
+      "Never have I ever gotten jealous of people who live near their partner.",
+      "Never have I ever written a message and deleted it instead of sending it.",
+      "Never have I ever looked at plane tickets just to daydream.",
+      "Never have I ever told someone how proud I am of us.",
+      "Never have I ever stayed up way too late just to talk to you.",
+      "Never have I ever felt closer to you on a call than some people feel in person.",
+      "Never have I ever practiced saying ‘I love you’ in your language (or accent).",
+      "Never have I ever imagined introducing you to my family in detail.",
+      "Never have I ever gotten turned on during one of our calls.",
+      "Never have I ever touched myself while thinking about you.",
+      "Never have I ever sent a risky photo or video to you.",
+      "Never have I ever fantasized about us in public.",
+      "Never have I ever wanted the call to turn spicy.",
+      "Never have I ever saved a photo of you as my wallpaper.",
+      "Never have I ever lied about being busy so I could keep talking to you.",
+      "Never have I ever felt insecure about how much you miss me.",
+      "Never have I ever written a long message and then shortened it.",
+      "Never have I ever imagined our wedding or future home.",
+      "Never have I ever gotten butterflies just from seeing your name on my phone.",
+      "Never have I ever pretended to be okay when the distance was really hard.",
+      "Never have I ever wanted to book a last-minute flight to see you.",
+      "Never have I ever practiced a speech I wanted to give you.",
+      "Never have I ever felt more connected to you than to people I see every day."
+    ];
+
+    const KNOW = [
+      "What is my go-to comfort food when I’m stressed?",
+      "What time do I usually go to bed on a normal night?",
+      "What’s my biggest pet peeve?",
+      "What song have I had on repeat lately?",
+      "What’s one thing I’m weirdly good at?",
+      "What’s my love language (or what I think it is)?",
+      "What’s a childhood nickname I used to have?",
+      "What’s the first thing I usually do when I wake up?",
+      "What’s one fear I have that most people don’t know?",
+      "What’s my favorite way to spend a lazy Sunday?",
+      "What would I order if we went to a fancy restaurant?",
+      "What’s one goal I’m working on right now?",
+      "What’s my favorite memory from this year so far?",
+      "What’s something that always makes me laugh?",
+      "If I could teleport anywhere for a day, where would I go?",
+      "What’s one thing that always turns me on?",
+      "What’s my biggest insecurity that I trust you with?",
+      "What’s my favorite thing about your personality?",
+      "What’s one thing I always forget to do?",
+      "What’s my ideal way to spend a rainy day?",
+      "What’s a book, show, or movie that really moved me?",
+      "What’s one thing I’m secretly proud of?",
+      "What’s my favorite physical feature of yours?",
+      "What’s one habit of mine that drives you a little crazy?",
+      "What’s the last thing that made me really happy?",
+      "What’s one thing I want more of in our relationship?",
+      "What’s my biggest dream for the next 5 years?",
+      "What’s one thing that always calms me down?",
+      "What’s my favorite way to be comforted?",
+      "What’s one thing I’ve never told most people but I’ve told you?"
+    ];
+
+    const CHALLENGES = [
+      "Send each other a photo of your breakfast every day this week.",
+      "Watch the same movie at the same time and text reactions live.",
+      "Leave a voice note every morning for 7 days straight.",
+      "Create a shared playlist and add one song each day.",
+      "Write a short letter and mail it (yes, actual paper).",
+      "Plan your next reunion in as much detail as possible tonight.",
+      "Send a ‘thinking of you’ text at a random time tomorrow.",
+      "Draw a portrait of each other and exchange photos of the results.",
+      "Cook the same simple recipe on a video call this weekend.",
+      "Make a list of 10 things you want to do together and rank them.",
+      "Change your lock screen to a photo of the two of you for a week.",
+      "Send a song that describes how you’re feeling today — no explanation.",
+      "Do a 5-minute guided meditation together on a call.",
+      "Write down three things you’re grateful for about each other and read them.",
+      "Have a ‘no phones except for the call’ date night this week.",
+      "Send each other a spicy voice note before bed tonight.",
+      "Describe in detail what you want the first night of the reunion to look like.",
+      "Send a photo of something that made you think of the other person today.",
+      "Write a short ‘open when you miss me’ note and send a photo of it.",
+      "Plan a virtual date with a theme (pizza night, movie night, game night).",
+      "Send a voice note of you reading a short love poem or quote.",
+      "Make a list of 5 things you want to try in bed when you meet.",
+      "Send each other a playlist of 5 songs that feel like ‘us’.",
+      "Do a 10-minute ‘gratitude’ call where you only say positive things.",
+      "Send a photo of your current view and describe how you’d share it with me."
+    ];
+
+    // ========== ROOM SYSTEM ==========
+    let roomCode = null;
+    let turnCounters = { tod: 0, wyr: 0, nhie: 0, know: 0 };
+    let currentMode = 'soft';
+
+    function seededRandom(seed) {
+      return function() {
+        let t = seed += 0x6D2B79F5;
+        t = Math.imul(t ^ t >>> 15, t | 1);
+        t ^= t + Math.imul(t ^ t >>> 7, t | 61);
+        return ((t ^ t >>> 14) >>> 0) / 4294967296;
+      };
+    }
+    function hashCode(str) {
+      let hash = 0;
+      for (let i = 0; i < str.length; i++) {
+        hash = ((hash << 5) - hash) + str.charCodeAt(i);
+        hash |= 0;
+      }
+      return Math.abs(hash);
+    }
+    function getSeededIndex(arrayLength, gameKey) {
+      if (!roomCode) return Math.floor(Math.random() * arrayLength);
+      const seed = hashCode(roomCode + gameKey + turnCounters[gameKey]);
+      const rand = seededRandom(seed);
+      return Math.floor(rand() * arrayLength);
+    }
+    function createRoom() {
+      const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+      let code = '';
+      for (let i = 0; i < 5; i++) code += chars[Math.floor(Math.random() * chars.length)];
+      document.getElementById('roomCode').value = code;
+      joinRoom();
+    }
+    function joinRoom() {
+      const code = document.getElementById('roomCode').value.trim().toUpperCase();
+      if (code.length < 3) { showToast('Enter a code (at least 3 characters)'); return; }
+      roomCode = code;
+      turnCounters = { tod: 0, wyr: 0, nhie: 0, know: 0 };
+      const status = document.getElementById('roomStatus');
+      status.textContent = `Connected to room: ${code}`;
+      status.classList.add('connected');
+      showToast(`Joined room ${code} 💕`);
+      document.getElementById('tod-result').innerHTML = `<div class="result-label">Room ready</div><div class="result-text">Both of you are in sync 💕</div>`;
+    }
+
+    function drawTOD(type) {
+      const modeData = TOD[currentMode];
+      let finalType = type;
+      if (type === 'random') finalType = Math.random() < 0.5 ? 'truth' : 'dare';
+      const list = modeData[finalType];
+      const idx = getSeededIndex(list.length, 'tod');
+      const text = list[idx];
+      turnCounters.tod++;
+      updateTurnInfo('tod');
+      document.getElementById('tod-result').innerHTML = `
+        <div class="result-type ${finalType}">${finalType.toUpperCase()}</div>
+        <div class="result-label">${currentMode} mode</div>
+        <div class="result-text">${text}</div>
+      `;
+    }
+    function drawWYR() {
+      const idx = getSeededIndex(WYR.length, 'wyr');
+      turnCounters.wyr++;
+      updateTurnInfo('wyr');
+      document.getElementById('wyr-result').innerHTML = `
+        <div class="result-label">Would you rather...</div>
+        <div class="result-text">${WYR[idx]}</div>
+      `;
+    }
+    function drawNHIE() {
+      const idx = getSeededIndex(NHIE.length, 'nhie');
+      turnCounters.nhie++;
+      updateTurnInfo('nhie');
+      document.getElementById('nhie-result').innerHTML = `
+        <div class="result-label">Never have I ever...</div>
+        <div class="result-text">${NHIE[idx]}</div>
+      `;
+    }
+    function drawKnow() {
+      const idx = getSeededIndex(KNOW.length, 'know');
+      turnCounters.know++;
+      updateTurnInfo('know');
+      const n2 = document.getElementById('name2').value.trim() || 'your partner';
+      document.getElementById('know-result').innerHTML = `
+        <div class="result-label">About ${n2}</div>
+        <div class="result-text">${KNOW[idx]}</div>
+      `;
+    }
+    function updateTurnInfo(game) {
+      const el = document.getElementById(game + '-turn');
+      if (el && roomCode) el.textContent = `Turn ${turnCounters[game]} • Room ${roomCode}`;
+    }
+    function shuffleChallenges() {
+      const list = document.getElementById('challenge-list');
+      const shuffled = [...CHALLENGES].sort(() => Math.random() - 0.5).slice(0, 6);
+      list.innerHTML = shuffled.map(c => `<div class="challenge">${c}</div>`).join('');
+    }
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2300);
+    }
+
+    document.querySelectorAll('.tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.card').forEach(c => c.classList.remove('active'));
+        tab.classList.add('active');
+        document.getElementById(tab.dataset.tab).classList.add('active');
+      });
+    });
+    document.querySelectorAll('#tod-modes .mode-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('#tod-modes .mode-btn').forEach(b => b.classList.remove('active', 'spicy-active'));
+        btn.classList.add('active');
+        if (btn.dataset.mode === 'spicy') btn.classList.add('spicy-active');
+        currentMode = btn.dataset.mode;
+        turnCounters.tod = 0;
+      });
+    });
+
+    function createHearts() {
+      const container = document.getElementById('hearts');
+      for (let i = 0; i < 12; i++) {
+        const h = document.createElement('div');
+        h.className = 'heart';
+        h.textContent = ['💕','💗','💖','❤️','✨'][Math.floor(Math.random()*5)];
+        h.style.left = Math.random()*100 + '%';
+        h.style.top = Math.random()*100 + '%';
+        h.style.animationDelay = Math.random()*8 + 's';
+        h.style.fontSize = (14 + Math.random()*18) + 'px';
+        container.appendChild(h);
+      }
+    }
+    createHearts();
+    shuffleChallenges();
+    document.getElementById('roomCode').addEventListener('keypress', e => { if (e.key === 'Enter') joinRoom(); });
+  </script>
+</body>
+</html>
